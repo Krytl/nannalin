@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>นันท์นลิน | ใต้เงาจันทรา</title>
 <meta property="og:title" content="นันท์นลิน | ใต้เงาจันทรา Under Her Rules">
-<meta property="og:description" content="ปลดล็อกมือถือของนันท์นลิน ถ้ารู้รหัส ออกอากาศทุกวันเสาร์ 20:00 น. ทาง iQIYI">
+<meta property="og:description" content="ปลดล็อกมือถือของนันท์นลิน ถ้ารู้รหัส วันครบรอบ">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
@@ -262,7 +262,7 @@ $("#nots").innerHTML = C.notifs.map(n => `<div class="not"><b><span>${n.i} ${n.t
 /* หน้าโฮม */
 
 
-const APPS = [["line","LINE","li.png","#06c755"],["ig","Instagram","In.png","linear-gradient(45deg,#f9a03f,#d6249f,#5851db)"],["photos","รูปภาพ","Pho.png","#fff"],["cal","ปฏิทิน","ca.png","#fff"],["clock","นาฬิกา","al.png","#111"],["youtube","YouTube","y.png","#ff0033"],["iqiyi","iQIYI","iqiyi.png","#00cc96"],["music","Music","🎵","#e8508a"],["notes","โน้ต","📝","#fff"]];
+const APPS = [["line","LINE","li.png","#06c755"],["ig","Instagram","In.png","linear-gradient(45deg,#f9a03f,#d6249f,#5851db)"],["photos","รูปภาพ","Pho.png","#fff"],["cal","ปฏิทิน","ca.png","#fff"],["clock","นาฬิกา","al.png","#111"],["youtube","YouTube","y.png","#ff0033"],["iqiyi","iQIYI","iqiyi.png","#00cc96"],["music","Music","🎵","#e8508a"],["notes","โน้ต","📝","#fff"],["bank","MGI BANK",""]];
 
 
 const T = new Date(), TH = ["อา.","จ.","อ.","พ.","พฤ.","ศ.","ส."];
@@ -282,7 +282,13 @@ const ICONS = {
   
 };
 
-
+ICONS.bank = `<div style="position:relative;width:100%;height:100%">${svg(`<rect width="60" height="60" fill="#6c3bb0"/><text x="30" y="40" font-size="15" font-weight="700" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif">MGI</text>`)}<img src="mgi.jpg" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></div>`;
+const BANK = {
+  acc: "xxx-x-x0001-7",
+  balance: 86450320.75
+};
+let bankHide = false;
+const baht = n => n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const ico = a => `<button data-act="app" data-v="${a[0]}"><div class="ic" style="${ICONS[a[0]] ? "overflow:hidden" : "background:" + a[3]}">${a[0] === "iqiyi" ? '<img src="iqiyi.png" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">' : (ICONS[a[0]] || a[2])}</div>${a[1]}</button>`;
 
 
@@ -461,6 +467,7 @@ function noteOpen(i) {
 }
 function openApp(id) {
   if (id === "line") return lineList();
+   if (id === "bank") { bankHide = true; return bankApp(); }
   if (id === "notes") return noteList();
   if (id === "messages") return messageList();
   if (id === "ig") { const g = C.ig; return show(g.user, `<div class="ig"><div style="display:flex;gap:20px;align-items:center"><div class="av" style="width:84px;height:84px;font-size:40px;${g.avatar ? `background:url('${g.avatar}') center/cover` : ""}">${g.avatar ? "" : "🌙"}</div><div class="st"><div><b>${g.posts}</b>โพสต์</div><div><b>${g.followers}</b>ผู้ติดตาม</div><div><b>${g.following}</b>กำลังติดตาม</div></div></div><p style="margin:12px 0 4px"><b>${g.name}</b></p><p style="color:var(--sub);font-size:14px;margin-bottom:12px">${g.bio}</p></div><div class="ph">${igTiles(9, g.photos || C.photos)}</div>`); }
@@ -561,6 +568,24 @@ if (id === "youtube") { const vid = "Mrm0Ej8e_Yw", url = `https://www.youtube.co
 if (id === "phone") return show("ล่าสุด", C.calls.map(c => `<div class="li"><div class="m"><b style="${c.x ? "color:#ff453a" : ""}">${c.n}</b><small>${c.x ? "↙ สายที่ไม่ได้รับ" : (c.o ? "↗ โทรออก" : "↙ โทรเข้า") + " · " + c.s}</small></div><small style="flex:none">${c.w}</small></div>`).join(""));
 
 }
+function bankApp() {
+  const b = BANK;
+  const act = (e, t) => `<div style="text-align:center;font-size:12px"><div style="width:54px;height:54px;margin:0 auto 6px;border-radius:17px;background:var(--card);border:1px solid #3a3550;display:grid;place-items:center;font-size:25px">${e}</div>${t}</div>`;
+  const tab = (e, t, on) => `<div style="flex:1;text-align:center;font-size:11px;color:${on ? "#e6c77a" : "var(--sub)"}"><div style="font-size:22px">${e}</div>${t}</div>`;
+  show("MGI BANK",
+    `<div style="padding:4px 18px 12px"><small style="color:var(--sub)">สวัสดี</small><div style="font-size:20px;font-weight:600">คุณนันท์นลิน</div></div>
+    <div style="margin:0 14px 18px;padding:20px;border-radius:22px;color:#1c1c24;background:linear-gradient(135deg,#8f8f9b 0%,#ececf2 32%,#b8b8c4 58%,#f6f6fa 80%,#9a9aa7 100%);box-shadow:0 8px 24px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.55)">
+      <div style="display:flex;justify-content:space-between;align-items:center"><b style="letter-spacing:3px;font-size:13px">MGI PLATINUM</b><span style="font-size:13px">${b.acc}</span></div>
+      <p style="margin:18px 0 2px;font-size:13px;opacity:.7">ยอดเงินที่ใช้ได้</p>
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-size:30px;font-weight:600">${bankHide ? "฿ xx,xxx,xxx.xx" : "฿ " + baht(b.balance)}</span><button data-act="bankeye" style="font-size:20px">${bankHide ? "🙈" : "👁"}</button></div>
+      <div style="margin-top:14px;font-size:11px;opacity:.65;letter-spacing:3px">PRIVATE BANKING</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 14px 18px">${act("💸","โอนเงิน")}${act("📷","สแกนจ่าย")}${act("📱","เติมเงิน")}${act("🧾","จ่ายบิล")}</div>
+    <div style="margin:0 14px 14px;padding:16px;border-radius:18px;background:linear-gradient(135deg,#15121f,#2a2438);border:1px solid #c9a84c"><b style="color:#e6c77a">Platinum Privilege</b><p style="margin-top:4px;font-size:13px;color:var(--sub)">สิทธิ์ห้องรับรองสนามบินและผู้ดูแลส่วนตัว</p></div>
+    <div style="margin:0 14px;padding:16px;border-radius:18px;background:var(--card)"><b>MGI Rewards</b><p style="margin-top:4px;font-size:13px;color:var(--sub)">แต้มสะสมของคุณ 482,900 แต้ม</p></div>`,
+    "home",
+    `<div style="position:absolute;bottom:0;left:0;right:0;display:flex;padding:10px 6px calc(env(safe-area-inset-bottom,0px) + 22px);background:#14101e;border-top:1px solid #3a3550">${tab("🏠","หน้าหลัก",1)}${tab("💳","บัญชี")}${tab("⬛","สแกน")}${tab("🧾","บริการ")}${tab("☰","เพิ่มเติม")}</div>`);
+}
 const closeApp = () => $("#app").classList.remove("on");
 
 /* ปลดล็อก */
@@ -591,6 +616,7 @@ $(".phone").addEventListener("click", e => {
   else if (a === "lines") lineList(); else if (a === "chat") lineChat(+v); else if (a === "send") send(+v);else if (a === "msgchat") messageChat(+v);
 else if (a === "msgback") messageList();
 else if (a === "msgsend") messageSend(+v);
+ else if (a === "bankeye") { bankHide = !bankHide; bankApp(); }
 else if (a === "igpost") igPost(+v);
 else if (a === "igback") openApp("ig");
 else if (a === "note") noteOpen(+v); else if (a === "notelist") noteList();
